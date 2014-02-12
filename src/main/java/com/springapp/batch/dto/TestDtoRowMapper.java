@@ -12,7 +12,7 @@ public class TestDtoRowMapper implements RowMapper {
 
     public TestDto mapRow(ResultSet resultSet, int rowNumber) throws SQLException {
         TestDto person = new TestDto();
-        person.setKontohaverId(resultSet.getString(1));
+        person.setKtonr(resultSet.getString(1));
         person.setForNavn(resultSet.getString(2));
         person.setEtterNavn(resultSet.getString(3));
         return person;

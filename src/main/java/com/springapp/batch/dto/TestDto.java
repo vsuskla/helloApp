@@ -4,16 +4,16 @@ package com.springapp.batch.dto;
  * Created by klaus on 05/01/14.
  */
 public class TestDto {
-    public String kontohaverId;
+    public String ktonr;
     public String forNavn;
     public String etterNavn;
 
-    public String getKontohaverId() {
-        return kontohaverId;
+    public String getKtonr() {
+        return ktonr;
     }
 
-    public void setKontohaverId(String kontohaverId) {
-        this.kontohaverId = kontohaverId;
+    public void setKtonr(String ktonr) {
+        this.ktonr = ktonr;
     }
 
     public String getForNavn() {
@@ -33,7 +33,7 @@ public class TestDto {
     }
 
     public String toString(){
-        return "Kontohaver ID: " + kontohaverId + " Navn: " + forNavn + " " + etterNavn;
+        return "Kontohaver ID: " + ktonr + " Navn: " + forNavn + " " + etterNavn;
 
     }
 }

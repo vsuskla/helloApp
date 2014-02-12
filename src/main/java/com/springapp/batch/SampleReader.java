@@ -41,17 +41,13 @@ public class SampleReader implements ItemReader<List<TestDto>> {
     /**
      * Reads next record from input
      */
+    @Override
     public List<TestDto> read() throws Exception {
-        String sql = "SELECT KTOID, FORNAVN, ETTERNAVN FROM TEST.TEST";
+        String sql = "SELECT KTONR, FORNAVN, ETTERNAVN FROM TEST.TEST";
 
         medlemmer = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TestDto.class));
-        while(medlemmer.iterator().hasNext()){
-            medlemmer.iterator().toString();
-        }
         if (!medlemmer.isEmpty()) {
-            for(TestDto medl : medlemmer){
-                System.out.println(medl.toString());
-            }
+            System.out.println(medlemmer.toString());
             return medlemmer;
         }
         else {
