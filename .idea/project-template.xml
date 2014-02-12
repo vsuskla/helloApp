@@ -1,0 +1,5 @@
+<template>
+  <input-field default="com.springapp.batch">IJ_BASE_PACKAGE</input-field>
+
+    <icon-path>/icons/spring.png</icon-path>
+</template>
