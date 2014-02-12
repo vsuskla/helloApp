@@ -17,6 +17,8 @@ public class HelloApp {
         JobLauncher jobLauncher = context.getBean(JobLauncher.class);
         Job job = context.getBean("sampleJob", Job.class);
         JobParametersBuilder builder = new JobParametersBuilder();
+        //parameter for å få unik run.id..
+        builder.addLong("time",System.currentTimeMillis());
         JobExecution jobExecution = jobLauncher.run(job, builder.toJobParameters());
         System.out.println(jobExecution.getExitStatus().getExitCode());
     }
