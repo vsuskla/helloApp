@@ -1,20 +1,21 @@
 package com.springapp.batch;
 
 import com.springapp.batch.dto.TestDto;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 
-public class SampleReader implements ItemReader<List<TestDto>> {
+public class SampleReader implements ItemStreamReader<List<TestDto>> {
     private DataSource dataSource;
     private Connection con;
     private List<TestDto> medlemmer;
+    private Boolean ferdig = false;
     private JdbcTemplate jdbcTemplate;
 
 
@@ -25,13 +26,12 @@ public class SampleReader implements ItemReader<List<TestDto>> {
 
     }
 
-    public SampleReader() {
-        SampleReader reader;
-        try {
-            reader = new SampleReader(dataSource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void open(ExecutionContext executionContext) throws ItemStreamException {
+        String sql = "SELECT KTONR, FORNAVN, ETTERNAVN FROM TEST.TEST";
+
+        medlemmer = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TestDto.class));
+
     }
 
     /**
@@ -39,17 +39,24 @@ public class SampleReader implements ItemReader<List<TestDto>> {
      */
     @Override
     public List<TestDto> read() throws Exception {
-        String sql = "SELECT KTONR, FORNAVN, ETTERNAVN FROM TEST.TEST";
-
-        medlemmer = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TestDto.class));
-        if (!medlemmer.isEmpty()) {
-            System.out.println(medlemmer.toString());
-            return medlemmer;
-        }
-        else {
+        if (ferdig) {
             return null;
         }
+        else {
+            ferdig = true;
+            return medlemmer;
+        }
 
+    }
+
+    @Override
+    public void update(ExecutionContext executionContext) throws ItemStreamException {
+
+    }
+
+    @Override
+    public void close() throws ItemStreamException {
+         medlemmer.clear();
     }
 
 }
