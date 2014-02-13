@@ -34,10 +34,6 @@ public class SampleReader implements ItemReader<List<TestDto>> {
         }
     }
 
-    private String[] input = {"Hello world!", null};
-
-    private int index = 0;
-
     /**
      * Reads next record from input
      */
