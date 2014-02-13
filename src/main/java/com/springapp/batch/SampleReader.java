@@ -29,7 +29,6 @@ public class SampleReader implements ItemStreamReader<List<TestDto>> {
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
         String sql = "SELECT KTONR, FORNAVN, ETTERNAVN FROM TEST.TEST";
-
         medlemmer = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TestDto.class));
 
     }
