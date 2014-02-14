@@ -1,12 +1,19 @@
 package com.springapp.batch.dto;
 
+import java.math.BigDecimal;
+
 /**
  * Created by klaus on 05/01/14.
  */
-public class TestDto {
+public class KundeDto {
     public String ktonr;
     public String forNavn;
     public String etterNavn;
+    public BigDecimal beholdning;
+
+    public BigDecimal getBeholdning() { return beholdning; }
+
+    public void setBeholdning(BigDecimal beholdning) { this.beholdning = beholdning; }
 
     public String getKtonr() {
         return ktonr;
@@ -33,7 +40,7 @@ public class TestDto {
     }
 
     public String toString(){
-        return "Kontohaver ID: " + ktonr + " Navn: " + forNavn + " " + etterNavn;
+        return "Kontohaver ID: " + ktonr + " Navn: " + forNavn + " " + etterNavn + " beholdning:  " + beholdning;
 
     }
 }

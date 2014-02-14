@@ -1,6 +1,7 @@
 package com.springapp.batch;
 
-import com.springapp.batch.dto.TestDto;
+import com.springapp.batch.dto.BeholdningsDto;
+import com.springapp.batch.dto.KundeDto;
 import org.springframework.batch.item.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,13 +9,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 
-public class SampleReader implements ItemStreamReader<List<TestDto>> {
+public class SampleReader implements ItemStreamReader<List<KundeDto>> {
     private DataSource dataSource;
     private Connection con;
-    private List<TestDto> medlemmer;
+    private List<KundeDto> medlemmer;
+    private List<BeholdningsDto> beholdningsDtos;
     private Boolean ferdig = false;
     private JdbcTemplate jdbcTemplate;
 
@@ -29,23 +30,29 @@ public class SampleReader implements ItemStreamReader<List<TestDto>> {
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
         String sql = "SELECT KTONR, FORNAVN, ETTERNAVN FROM TEST.TEST";
-        medlemmer = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TestDto.class));
-
+        medlemmer = jdbcTemplate.query(sql, new BeanPropertyRowMapper(KundeDto.class));
+        sql = "SELECT KTONR, BEHOLDNING FROM TEST.BEHOLDNING";
+        beholdningsDtos = jdbcTemplate.query(sql, new BeanPropertyRowMapper(BeholdningsDto.class));
+        System.out.println("BONGO!");
     }
 
     /**
      * Reads next record from input
      */
     @Override
-    public List<TestDto> read() throws Exception {
+    public List<KundeDto> read() throws Exception {
         if (ferdig) {
             return null;
         }
-        else {
-            ferdig = true;
-            return medlemmer;
+        for(KundeDto kunde : medlemmer){
+            for(BeholdningsDto beh : beholdningsDtos){
+                if(kunde.ktonr.equals(beh.getKtonr())){
+                    kunde.setBeholdning(beh.getBeholdning());
+                }
+            }
         }
-
+        ferdig = true;
+        return medlemmer;
     }
 
     @Override
