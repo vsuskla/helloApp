@@ -1,5 +1,6 @@
 package com.springapp.batch;
 
+import com.springapp.batch.dto.BankDto;
 import com.springapp.batch.dto.BeholdningsDto;
 import com.springapp.batch.dto.KundeDto;
 import org.springframework.batch.item.*;
@@ -9,13 +10,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class SampleReader implements ItemStreamReader<List<KundeDto>> {
+public class SampleReader implements ItemStreamReader<List<BankDto>> {
     private DataSource dataSource;
     private Connection con;
     private List<KundeDto> medlemmer;
     private List<BeholdningsDto> beholdningsDtos;
+    private List<BankDto> bankDtos;
     private Boolean ferdig = false;
     private JdbcTemplate jdbcTemplate;
 
@@ -40,7 +43,9 @@ public class SampleReader implements ItemStreamReader<List<KundeDto>> {
      * Reads next record from input
      */
     @Override
-    public List<KundeDto> read() throws Exception {
+    public List<BankDto> read() throws Exception {
+        BankDto bankDto = new BankDto();
+        bankDtos = new ArrayList<BankDto>();
         if (ferdig) {
             return null;
         }
@@ -49,10 +54,15 @@ public class SampleReader implements ItemStreamReader<List<KundeDto>> {
                 if(kunde.ktonr.equals(beh.getKtonr())){
                     kunde.setBeholdning(beh.getBeholdning());
                 }
+                bankDto.setKundeDto(kunde);
+                if(bankDto!=null){
+                    bankDtos.add(bankDto);
+                    bankDto = new BankDto();
+                }
             }
         }
         ferdig = true;
-        return medlemmer;
+        return bankDtos;
     }
 
     @Override
