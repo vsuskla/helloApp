@@ -3,6 +3,7 @@ package com.springapp.batch;
 import com.springapp.batch.dto.BankDto;
 import com.springapp.batch.dto.BeholdningsDto;
 import com.springapp.batch.dto.KundeDto;
+import com.springapp.batch.dto.TransDto;
 import org.springframework.batch.item.*;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,11 +17,12 @@ import java.util.List;
 public class SampleReader implements ItemStreamReader<List<BankDto>> {
     private DataSource dataSource;
     private Connection con;
+    private JdbcTemplate jdbcTemplate;
     private List<KundeDto> medlemmer;
     private List<BeholdningsDto> beholdningsDtos;
     private List<BankDto> bankDtos;
     private Boolean ferdig = false;
-    private JdbcTemplate jdbcTemplate;
+    private List<TransDto> transDtos;
 
 
     public SampleReader(DataSource dataSource) throws SQLException {
@@ -36,6 +38,8 @@ public class SampleReader implements ItemStreamReader<List<BankDto>> {
         medlemmer = jdbcTemplate.query(sql, new BeanPropertyRowMapper(KundeDto.class));
         sql = "SELECT KTONR, BEHOLDNING FROM TEST.BEHOLDNING";
         beholdningsDtos = jdbcTemplate.query(sql, new BeanPropertyRowMapper(BeholdningsDto.class));
+        sql = "SELECT KTONR, TYPE, ANTALL FROM TEST.TRANS WHERE BEHANDLET IS NULL";
+        transDtos = jdbcTemplate.query(sql, new BeanPropertyRowMapper(TransDto.class));
         System.out.println("BONGO!");
     }
 
@@ -49,18 +53,10 @@ public class SampleReader implements ItemStreamReader<List<BankDto>> {
         if (ferdig) {
             return null;
         }
-        for(KundeDto kunde : medlemmer){
-            for(BeholdningsDto beh : beholdningsDtos){
-                if(kunde.ktonr.equals(beh.getKtonr())){
-                    kunde.setBeholdning(beh.getBeholdning());
-                }
-                bankDto.setKundeDto(kunde);
-                if(bankDto!=null){
-                    bankDtos.add(bankDto);
-                    bankDto = new BankDto();
-                }
-            }
-        }
+        bankDto.setKundeDto(medlemmer);
+        bankDto.setBeholdningsDto(beholdningsDtos);
+        bankDto.setTransDto(transDtos);
+        bankDtos.add(bankDto);
         ferdig = true;
         return bankDtos;
     }

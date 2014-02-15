@@ -1,35 +1,37 @@
 package com.springapp.batch.dto;
 
+import java.util.List;
+
 /**
  * Created by klaus on 15.02.14.
  */
 public class BankDto {
 
-    private KundeDto kundeDto;
-    private BeholdningsDto beholdningsDto;
-    private TransDto transDto;
+    private List<KundeDto> kundeDto;
+    private List<BeholdningsDto> beholdningsDto;
+    private List<TransDto> transDto;
 
-    public KundeDto getKundeDto() {
+    public List<KundeDto> getKundeDto() {
         return kundeDto;
     }
 
-    public void setKundeDto(KundeDto kundeDto) {
+    public void setKundeDto(List<KundeDto> kundeDto) {
         this.kundeDto = kundeDto;
     }
 
-    public BeholdningsDto getBeholdningsDto() {
+    public List<BeholdningsDto> getBeholdningsDto() {
         return beholdningsDto;
     }
 
-    public void setBeholdningsDto(BeholdningsDto beholdningsDto) {
+    public void setBeholdningsDto(List<BeholdningsDto> beholdningsDto) {
         this.beholdningsDto = beholdningsDto;
     }
 
-    public TransDto getTransDto() {
+    public List<TransDto> getTransDto() {
         return transDto;
     }
 
-    public void setTransDto(TransDto transDto) {
+    public void setTransDto(List<TransDto> transDto) {
         this.transDto = transDto;
     }
 }

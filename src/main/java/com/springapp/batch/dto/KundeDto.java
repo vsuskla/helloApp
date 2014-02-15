@@ -9,7 +9,7 @@ public class KundeDto {
     public String ktonr;
     public String forNavn;
     public String etterNavn;
-    public BigDecimal beholdning;
+    public BigDecimal beholdning = BigDecimal.ZERO;
 
     public BigDecimal getBeholdning() { return beholdning; }
 
