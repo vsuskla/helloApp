@@ -5,14 +5,28 @@ import com.springapp.batch.dto.BeholdningsDto;
 import com.springapp.batch.dto.KundeDto;
 import com.springapp.batch.dto.TransDto;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by klaus on 15.02.14.
  */
 public class BankProcessor  implements ItemProcessor<List<BankDto>, List<KundeDto>>{
+    private DataSource dataSource;
+    private Connection con;
+    private JdbcTemplate jdbcTemplate;
+
+    public BankProcessor(DataSource dataSource) throws SQLException {
+        this.dataSource = dataSource;
+        this.con = dataSource.getConnection();
+        this.jdbcTemplate = new JdbcTemplate(this.dataSource);
+    }
 
 
     @Override
@@ -35,7 +49,8 @@ public class BankProcessor  implements ItemProcessor<List<BankDto>, List<KundeDt
                         if(transDto.getKtonr().equals(kundeDto1.ktonr) && kundeDto1.ktonr.equals(beholdningsDto.getKtonr())){
                             if(transDto.getType().equals("TEGN")){
                                 kundeDto1.setBeholdning(kundeDto1.beholdning.add(transDto.getAntall()));
-
+                                jdbcTemplate.update("UPDATE TEST.BEHOLDNING SET BEHOLDNING = ? WHERE KTONR = ?", kundeDto1.getBeholdning(),kundeDto1.ktonr);
+                                jdbcTemplate.update("UPDATE TEST.TRANS SET BEHANDLET = ? WHERE KTONR = ? AND BEHANDLET IS NULL ", new Date(), kundeDto1.ktonr);
                                 break;
                             }
                         }
